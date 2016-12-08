@@ -34,13 +34,15 @@ exports.handleRequest = function (req, res) {
       body += chunk;
     });
     // var inputUrl = body.split('=');
-    console.log(`${archive.paths.list}`);
+    console.log(archive.paths.loading);
     req.on('end', function () {
       fs.writeFile(archive.paths.list, body.slice(4) + '\n', (err, data) => {
         if (err) { throw err; }
-        console.log('The inputUrl was appended to file!');
+      });
+      fs.readFile(archive.paths.loading, 'utf8', (err, data) => {
+        if (err) { throw err; }
         res.writeHead(302, exports.headers);
-        res.end(archive.paths.list);
+        res.end(data);
       });
     }
   );
