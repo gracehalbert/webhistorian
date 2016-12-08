@@ -11,6 +11,7 @@ exports.handleRequest = function (req, res) {
     if (req.url === '/' || req.url === '/index.html') {
 
       fs.readFile(archive.paths.index, 'utf8', (err, data) => {
+        console.log('index get');
         if (err) { throw err; }
         res.writeHead(200, exports.headers);
         res.end(data);
@@ -18,9 +19,10 @@ exports.handleRequest = function (req, res) {
     } else {
       fs.readFile(archive.paths.archivedSites + req.url, 'utf8', (err, data) => {
         if (data === undefined) {
-          res.writeHead(404, exports.headers);
+          // res.writeHead(404, exports.headers);
           //might need to require headers or some shit, check export.headers if there's a problem w/ headers
-          res.end('err');
+          res.writeHead(301, {'Location': 'web/public/loading.html'}, exports.headers);
+          res.end();
         } else {
           res.writeHead(200, exports.headers);
           res.end(data);
@@ -33,15 +35,12 @@ exports.handleRequest = function (req, res) {
     req.on('data', function (chunk) {
       body += chunk;
     });
-    // var inputUrl = body.split('=');
-    console.log(archive.paths.loading);
     req.on('end', function () {
       fs.writeFile(archive.paths.list, body.slice(4) + '\n', (err, data) => {
+        console.log('test')
         if (err) { throw err; }
-      });
-      fs.readFile(archive.paths.loading, 'utf8', (err, data) => {
-        if (err) { throw err; }
-        res.writeHead(302, exports.headers);
+        // console.log('test');
+        res.writeHead(302, {'Location': archive.paths.loading}, exports.headers);
         res.end(data);
       });
     }

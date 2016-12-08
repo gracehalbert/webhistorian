@@ -66,11 +66,11 @@ exports.isUrlArchived = function(url, callback) {
 exports.downloadUrls = function(list, callback) {
   list.forEach(function(item) {
     exports.isUrlArchived(item, function(bool) {
-      if(!bool) {
+      if (!bool) {
         fs.writeFile(exports.paths.archivedSites + '/' + item, {flag: 'wx'}, (err, callback) => {
           if (err) { throw err; }
         });
       }
-    })
+    });
   });
 };
