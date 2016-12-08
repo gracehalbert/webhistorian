@@ -19,9 +19,9 @@ exports.handleRequest = function (req, res) {
     } else {
       fs.readFile(archive.paths.archivedSites + req.url, 'utf8', (err, data) => {
         if (data === undefined) {
-          // res.writeHead(404, exports.headers);
+          res.writeHead(404, exports.headers);
           //might need to require headers or some shit, check export.headers if there's a problem w/ headers
-          res.writeHead(301, {'Location': 'web/public/loading.html'}, exports.headers);
+          // res.writeHead(301, {'Location': 'web/public/loading.html'}, exports.headers);
           res.end();
         } else {
           res.writeHead(200, exports.headers);
@@ -37,7 +37,7 @@ exports.handleRequest = function (req, res) {
     });
     req.on('end', function () {
       fs.writeFile(archive.paths.list, body.slice(4) + '\n', (err, data) => {
-        console.log('test')
+        console.log('test');
         if (err) { throw err; }
         // console.log('test');
         res.writeHead(302, {'Location': archive.paths.loading}, exports.headers);

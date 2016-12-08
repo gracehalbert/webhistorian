@@ -1,6 +1,8 @@
 var fs = require('fs');
 var path = require('path');
 var _ = require('underscore');
+var fetcher = require('../workers/htmlfetcher');
+var http = require('http');
 
 /*
  * You will need to reuse the same paths many times over in the course of this sprint.
@@ -14,7 +16,8 @@ exports.paths = {
   archivedSites: path.join(__dirname, '../archives/sites'),
   list: path.join(__dirname, '../archives/sites.txt'),
   index: path.join(__dirname, '../web/public/index.html'),
-  loading: path.join(__dirname, '../web/public/loading.html')
+  loading: path.join(__dirname, '../web/public/loading.html'),
+  styles: path.join(__dirname, '../web/public/styles.css')
 };
 
 // Used for stubbing paths for tests, do not modify
@@ -67,9 +70,12 @@ exports.downloadUrls = function(list, callback) {
   list.forEach(function(item) {
     exports.isUrlArchived(item, function(bool) {
       if (!bool) {
-        fs.writeFile(exports.paths.archivedSites + '/' + item, {flag: 'wx'}, (err, callback) => {
-          if (err) { throw err; }
-        });
+        // fs.writeFile(exports.paths.archivedSites + '/' + item, {flag: 'wx'}, (err, callback) => {
+        //   if (err) { throw err; }
+        //
+        // });
+        console.log(item);
+        fetcher.htmlfetcher(item, exports.paths.archivedSites + '/' + item);
       }
     });
   });
