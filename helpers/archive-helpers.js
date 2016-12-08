@@ -27,20 +27,14 @@ exports.initialize = function(pathsObj) {
 // modularize your code. Keep it clean!
 
 exports.readListOfUrls = function() {
-  fs.readFile(exports.paths['list'], 'utf8', (err, data) => {
-    if (err) { throw err; }
-    return data;
-  });
+
 };
 
 exports.isUrlInList = function() {
 };
 
 exports.addUrlToList = function(data) {
-  // console.log('hi');
-  fs.appendFile('site.txt', data, function(err) {
-    console.log(err);
-  });
+
 };
 
 exports.isUrlArchived = function() {

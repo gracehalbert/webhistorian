@@ -34,9 +34,9 @@ exports.handleRequest = function (req, res) {
       body += chunk;
     });
     // var inputUrl = body.split('=');
-    console.log(archive.paths.list);
+    console.log(`${archive.paths.list}`);
     req.on('end', function () {
-      fs.write('archives.paths.list', body.slice(4), (err) => {
+      fs.writeFile(archive.paths.list, body.slice(4) + '\n', (err, data) => {
         if (err) { throw err; }
         console.log('The inputUrl was appended to file!');
         res.writeHead(302, exports.headers);
