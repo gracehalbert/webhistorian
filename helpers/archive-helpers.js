@@ -3,6 +3,7 @@ var path = require('path');
 var _ = require('underscore');
 var fetcher = require('../workers/htmlfetcher');
 var http = require('http');
+var Promise = require('bluebird');
 
 /*
  * You will need to reuse the same paths many times over in the course of this sprint.
@@ -29,15 +30,16 @@ exports.initialize = function(pathsObj) {
 
 // The following function names are provided to you to suggest how you might
 // modularize your code. Keep it clean!
-
-exports.readListOfUrls = function(callback) {
+readListOfUrlsAsync = function(callback) {
   fs.readFile(exports.paths.list, 'utf8', (err, data) => {
     if (err) { throw err; }
     callback(data.split('\n'));
   });
 };
 
-exports.isUrlInList = function(value, callback) {
+exports.readListOfUrls = Promise.promisify(readListOfUrlsAsync);
+
+isUrlInListAsync = function(value, callback) {
   exports.readListOfUrls(function(list) {
     if (list.indexOf(value) > -1) {
       callback(true);
@@ -47,14 +49,18 @@ exports.isUrlInList = function(value, callback) {
   });
 };
 
-exports.addUrlToList = function(url, callback) {
+exports.isUrlInList = Promise.promisify(isUrlInListAsync);
+
+addUrlToListAsync = function(url, callback) {
   fs.appendFile(exports.paths.list, url, (err, data) => {
     if (err) { throw err; }
     callback(data);
   });
 };
 
-exports.isUrlArchived = function(url, callback) {
+exports.addUrlToList = Promise.promisify(addUrlToListAsync);
+
+isUrlArchivedAsync = function(url, callback) {
   fs.readdir(exports.paths.archivedSites, (err, list) => {
     if (err) { throw err; }
     if (list.indexOf(url) > -1) {
@@ -63,20 +69,19 @@ exports.isUrlArchived = function(url, callback) {
       callback(false);
     }
   });
-
 };
 
-exports.downloadUrls = function(list, callback) {
+
+exports.isUrlArchived = Promise.promisify(isUrlArchivedAsync);
+
+downloadUrlsAsync = function(list, callback) {
   list.forEach(function(item) {
     exports.isUrlArchived(item, function(bool) {
       if (!bool) {
-        // fs.writeFile(exports.paths.archivedSites + '/' + item, {flag: 'wx'}, (err, callback) => {
-        //   if (err) { throw err; }
-        //
-        // });
-        console.log(item);
         fetcher.htmlfetcher(item, exports.paths.archivedSites + '/' + item);
       }
     });
   });
 };
+
+exports.downloadUrls = Promise.promisify(downloadUrlsAsync);
